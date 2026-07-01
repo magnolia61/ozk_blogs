@@ -50,3 +50,11 @@ form.ozk-blog-form .field-widget-media-generic .form-item {
   margin-top: 0.2em !important;
   margin-bottom: 0.2em !important;
 }
+
+/* Het blogtekst-veld (Body) moet ruim zijn: minstens ~15 regels. Porto_sub
+   perst de textarea standaard klein; forceer een royale min-hoogte en laat
+   'm verticaal groter slepen. */
+form.ozk-blog-form .field-name-body textarea {
+  min-height: 26em !important;
+  resize: vertical;
+}
