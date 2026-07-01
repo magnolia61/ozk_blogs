@@ -317,4 +317,24 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
   // hieronder, dus andere formulieren op de site blijven ongemoeid.
   $form['#attributes']['class'][] = 'ozk-blog-form';
   $form['#attached']['css'][] = drupal_get_path('module', 'ozk_blogs') . '/ozk_blogs.form.css';
+
+  // Verwijder de automatische "E.g., ..." format-hint onder het datumveld.
+  // Die wordt door de date_popup-widget in een #process gezet (dus ná deze
+  // form_alter), daarom wissen we 'm in een #after_build.
+  if (isset($form['field_datum'])) {
+    $form['field_datum']['#after_build'][] = 'ozk_blogs_datum_after_build';
+  }
+}
+
+/**
+ * #after_build voor het datumveld: wist de "E.g., <datum>" format-hint die de
+ * date_popup-widget standaard onder het invoerveld zet.
+ */
+function ozk_blogs_datum_after_build($element, &$form_state) {
+  foreach (element_children($element) as $lang) {
+    if (isset($element[$lang][0]['value']['date']['#description'])) {
+      $element[$lang][0]['value']['date']['#description'] = '';
+    }
+  }
+  return $element;
 }
