@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * @file
+ * OZK Blogs: alle Drupal-logica rond het content type Article (blog) op één
+ * plek, in plaats van verspreid over losse Rules en theme-form-alters.
+ *
+ * Vervangt drie Drupal Rules die zijn uitgeschakeld (niet verwijderd) na de
+ * migratie naar deze module:
+ * - "Corrigeer Datum blog"   (rules_corrigeer_datum_blog)
+ * - "BLOG aanpassen titel"   (rules_blog_aanpassen_titel)
+ * - "Nieuwe Blog online"     (rules_nieuwe_blog_online)
+ *
+ * En vervangt de tijdelijke form_alter die eerder in het Porto_sub-theme
+ * stond (porto_sub_form_article_node_form_alter).
+ */
+
+/**
+ * Implements hook_node_presave().
+ */
+function ozk_blogs_node_presave($node) {
+  if ($node->type !== 'article') {
+    return;
+  }
+
+  ozk_blogs_datum_corrigeren($node);
+  ozk_blogs_titel_samenstellen($node);
+}
+
+/**
+ * Vult Datum met de aanmaakdatum van de node als het veld leeg is.
+ * Vervangt Rule "Corrigeer Datum blog".
+ */
+function ozk_blogs_datum_corrigeren(&$node) {
+  $langcode    = LANGUAGE_NONE;
+  $heeft_datum = !empty($node->field_datum[$langcode][0]['value']);
+
+  if (!$heeft_datum) {
+    // field_datum is van het Date-module veldtype 'date' (ISO-opslag zonder
+    // tijdzone) — zelfde opslagformaat als de rest van de site gebruikt.
+    $node->field_datum[$langcode][0]['value'] = gmdate('Y-m-d\TH:i:s', $node->created);
+  }
+}
+
+/**
+ * Stelt de node-titel samen uit Datum + Kamp categorie + Blognaam.
+ * Vervangt Rule "BLOG aanpassen titel".
+ *
+ * Format: "d/m kampcode: blognaam", bv. "23/07 jk1: woensdag" — exact het
+ * format dat de oude Rule ook produceerde, zodat bestaande URL's/gewoontes
+ * niet veranderen.
+ */
+function ozk_blogs_titel_samenstellen(&$node) {
+  $langcode  = LANGUAGE_NONE;
+  $blogtitel = trim($node->field_blogtitel[$langcode][0]['value'] ?? '');
+
+  // Zelfde voorwaarde als de oude Rule: alleen aanpassen als Blognaam is ingevuld.
+  if ($blogtitel === '') {
+    return;
+  }
+
+  $datum_value = $node->field_datum[$langcode][0]['value'] ?? NULL;
+  $datum_fmt   = $datum_value ? gmdate('d/m', strtotime($datum_value)) : '';
+
+  $kamp_code = '';
+  $kamp_tid  = $node->field_kamp_categorie[$langcode][0]['tid'] ?? NULL;
+  if ($kamp_tid) {
+    $term = taxonomy_term_load($kamp_tid);
+    if ($term) {
+      // 'description' bevat de korte kampcode (bv. "jk1"), niet de volledige naam.
+      $kamp_code = trim($term->description);
+    }
+  }
+
+  $node->title = trim("{$datum_fmt} {$kamp_code}: {$blogtitel}");
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function ozk_blogs_node_insert($node) {
+  if ($node->type !== 'article' || empty($node->status)) {
+    return;
+  }
+
+  ozk_blogs_activiteit_loggen($node);
+}
+
+/**
+ * Logt een CiviCRM-activiteit (activity_type_id 149) zodra een nieuwe blog
+ * live gaat. Vervangt Rule "Nieuwe Blog online".
+ */
+function ozk_blogs_activiteit_loggen($node) {
+  $extdebug = 'ozk_blogs';
+  $apidebug = FALSE;
+
+  if (!civicrm_initialize()) {
+    watchdog($extdebug, 'activiteit_loggen: civicrm_initialize mislukt — stop.', [], WATCHDOG_ERROR);
+    return;
+  }
+
+  $langcode = LANGUAGE_NONE;
+
+  $auteur_cid = CRM_Core_BAO_UFMatch::getContactId($node->uid);
+  if (!$auteur_cid) {
+    wachthond($extdebug, 1, 'activiteit_loggen: geen CiviCRM-contact voor auteur uid', $node->uid);
+    return;
+  }
+
+  $kamp_tid  = $node->field_kamp_categorie[$langcode][0]['tid'] ?? NULL;
+  $kamp_naam = '';
+  if ($kamp_tid) {
+    $term      = taxonomy_term_load($kamp_tid);
+    $kamp_naam = $term ? $term->name : '';
+  }
+
+  // De oude Rule gebruikte "site:current-user" (niet de node-auteur) voor de
+  // omschrijving in 'details' — dat kan afwijken van de auteur als iemand
+  // anders' blog wordt bewerkt/gepubliceerd. Zelfde gedrag overgenomen.
+  global $user;
+  $details     = '';
+  $huidige_cid = CRM_Core_BAO_UFMatch::getContactId($user->uid);
+  if ($huidige_cid) {
+    $params_contact_huidige = [
+        'checkPermissions' => FALSE,
+        'debug'            => $apidebug,
+        'select'           => ['display_name'],
+        'where'            => [['id', '=', $huidige_cid]],
+    ];
+    wachthond($extdebug, 7, 'params_contact_huidige', $params_contact_huidige);
+    $result_contact_huidige = civicrm_api4('Contact', 'get', $params_contact_huidige);
+    wachthond($extdebug, 9, 'result_contact_huidige', $result_contact_huidige);
+
+    $details = $result_contact_huidige[0]['display_name'] ?? '';
+  }
+
+  $params_activity_nieuweblog = [
+      'checkPermissions' => FALSE,
+      'debug'            => $apidebug,
+      'values'           => [
+          'activity_type_id'  => 149,
+          'source_contact_id' => $auteur_cid,
+          'source_record_id'  => $auteur_cid,
+          'subject'           => "nieuwe blog over {$kamp_naam}",
+          'location'          => $kamp_naam,
+          'details'           => $details,
+          'status_id'         => 2,
+      ],
+  ];
+  wachthond($extdebug, 7, 'params_activity_nieuweblog', $params_activity_nieuweblog);
+  $result_activity_nieuweblog = civicrm_api4('Activity', 'create', $params_activity_nieuweblog);
+  wachthond($extdebug, 9, 'result_activity_nieuweblog', $result_activity_nieuweblog);
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Verbergt het (verplichte, niet te verwijderen) core titelveld op het blog
+ * aanmaak-/bewerkformulier. De module exclude_node_title doet dit al bij
+ * bewerken (node/%/edit) maar bewust niet bij aanmaken (node/add/article,
+ * zie exclude_node_title_preprocess_page()). De titel wordt sowieso
+ * automatisch samengesteld door ozk_blogs_titel_samenstellen() hierboven.
+ */
+function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['title']['#access']   = FALSE;
+  $form['title']['#required'] = FALSE;
+}

@@ -1,0 +1,5 @@
+name = OZK Blogs
+description = "Logica rond het Blog (Article) content type: datum/titel-samenstelling, titelveld verbergen op het formulier en CiviCRM-activiteitenlog bij een nieuwe blog."
+core = 7.x
+package = OZK
+dependencies[] = civicrm
