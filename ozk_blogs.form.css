@@ -95,6 +95,13 @@ form.ozk-blog-form .field-widget-media-generic img {
   max-height: 90px !important;
   width: auto !important;
 }
+/* Verberg de bestandsnaam die de media-widget over de thumbnail legt
+   ("Schermafbeelding …png"). Die naam is ruis en overlapt de verkleinde
+   thumbnail rommelig. */
+form.ozk-blog-form .field-widget-media-generic .label-wrapper,
+form.ozk-blog-form .field-widget-media-generic .media-filename {
+  display: none !important;
+}
 /* Minder marge/padding rond elk foto-item en z'n crop-widget. */
 form.ozk-blog-form .field-widget-media-generic .media-widget,
 form.ozk-blog-form .field-widget-media-generic .media-thumbnail,
