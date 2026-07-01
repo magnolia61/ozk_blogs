@@ -335,6 +335,53 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
       }
     }
   }
+
+  // Verberg de lange "Tekstopmaak"-tips (toegestane HTML-tags/stijlen + de
+  // "meer informatie"-link) onder het blogtekst-veld. Die guidelines/help
+  // worden door de text_format-#process gebouwd (na deze form_alter), daarom
+  // regelen we het in een #after_build.
+  if (isset($form['body'])) {
+    $form['body']['#after_build'][] = 'ozk_blogs_body_after_build';
+  }
+}
+
+/**
+ * #after_build voor het body-veld: verbergt de filter-guidelines (lijst met
+ * toegestane tags) en de "meer informatie"-help. De formaatkiezer blijft.
+ */
+function ozk_blogs_body_after_build($element, &$form_state) {
+  foreach (element_children($element) as $lang) {
+    foreach (element_children($element[$lang]) as $delta) {
+      if (isset($element[$lang][$delta]['format']['guidelines'])) {
+        $element[$lang][$delta]['format']['guidelines']['#access'] = FALSE;
+      }
+      if (isset($element[$lang][$delta]['format']['help'])) {
+        $element[$lang][$delta]['format']['help']['#access'] = FALSE;
+      }
+    }
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ *
+ * Vervangt het generieke "Attach media"-label van de media-widget door een
+ * duidelijke, veld-specifieke tekst op de fotovelden van de blog. Draait ook
+ * bij AJAX-herbouw van de widget (nieuw item toevoegen), zodat het overal klopt.
+ */
+function ozk_blogs_field_widget_form_alter(&$element, &$form_state, $context) {
+  if (($context['instance']['entity_type'] ?? NULL) !== 'node'
+    || ($context['instance']['bundle'] ?? NULL) !== 'article') {
+    return;
+  }
+  $field_name = $context['field']['field_name'] ?? NULL;
+  if ($field_name === 'field_image') {
+    $element['#file_upload_title'] = t("upload banner foto's");
+  }
+  elseif ($field_name === 'field_extraimages') {
+    $element['#file_upload_title'] = t("upload meer foto's");
+  }
 }
 
 /**

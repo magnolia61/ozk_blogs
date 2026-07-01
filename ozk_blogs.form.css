@@ -18,19 +18,31 @@ form.ozk-blog-form .form-item {
   margin-bottom: 0.3em !important;
 }
 
-/* Veldtitels én fieldset-koppen (Banner fotos, Meer fotos) exact gelijk
-   trekken, zodat "Banner fotos" een gewone kop is zoals Blognaam/Datum en niet
-   een piepklein titeltje. Zowel het <legend>-element als de .fieldset-legend
-   -span pakken, want afhankelijk van de widget zit de tekst in het een of het
-   ander. */
-form.ozk-blog-form label,
-form.ozk-blog-form legend,
-form.ozk-blog-form .fieldset-legend {
+/* Gewone veldtitels (Blognaam, Datum, …). */
+form.ozk-blog-form label {
   font-size: 15px !important;
   font-weight: 700 !important;
   line-height: 1.3;
   margin-bottom: 0.15em !important;
   text-transform: none;
+}
+
+/* Fieldset-koppen (Banner fotos, Meer fotos, Documenten) zijn hoofd-koppen en
+   moeten groter/prominenter zijn dan de gewone veldtitels. */
+form.ozk-blog-form legend,
+form.ozk-blog-form .fieldset-legend {
+  font-size: 19px !important;
+  font-weight: 700 !important;
+  line-height: 1.3;
+  margin-bottom: 0.15em !important;
+  text-transform: none;
+}
+
+/* Het sublabel binnen de media-widget ("upload meer foto's" e.d.) juist klein
+   en in gewone (niet-vette) letters, onder de grote fieldset-kop. */
+form.ozk-blog-form .form-type-media > label {
+  font-size: 13px !important;
+  font-weight: 400 !important;
 }
 
 /* Fieldsets van de fotovelden strak omkaderen i.p.v. veel padding. */
