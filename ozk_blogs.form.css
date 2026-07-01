@@ -196,3 +196,45 @@ form.ozk-blog-form .field-name-field-documenten .description {
   font-size: 0.85em;
   font-weight: 400;
 }
+
+/* ---- Upload-secties (banner + meer foto's) als duidelijk kader ---- */
+/* Het upload-blok is de media-widget die als directe child van de
+   fieldset-wrapper staat (buiten de fototabel/grid). */
+form.ozk-blog-form .field-widget-media-generic .fieldset-wrapper > .form-type-media {
+  border: 1px solid #ccc;
+  background: whitesmoke;
+  border-radius: 5px;
+  padding: 14px 16px;
+  margin-top: 10px;
+}
+/* Duidelijke aanwijzing boven de knop. */
+form.ozk-blog-form .field-widget-media-generic .fieldset-wrapper > .form-type-media > label {
+  display: block;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  margin-bottom: 10px;
+}
+
+/* "Browse" als echte knop (OZK-magenta) met hover. Undo eventuele
+   element-hidden-resten zodat 'm netjes als knop toont. */
+form.ozk-blog-form .field-widget-media-generic a.browse {
+  position: static !important;
+  clip: auto !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-block !important;
+  background: #C13C62;
+  color: #fff !important;
+  padding: 8px 20px;
+  border: 0;
+  border-radius: 4px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+form.ozk-blog-form .field-widget-media-generic a.browse:hover,
+form.ozk-blog-form .field-widget-media-generic a.browse:focus {
+  background: #9c2f4e;
+  color: #fff !important;
+}
