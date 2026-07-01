@@ -324,6 +324,17 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
   if (isset($form['field_datum'])) {
     $form['field_datum']['#after_build'][] = 'ozk_blogs_datum_after_build';
   }
+
+  // Documenten-veld: het veldlabel verschijnt dubbel (op de multi-wrapper én op
+  // elk item). Houd alleen de bovenste kop "Documenten" en verberg de titel op
+  // itemniveau, zodat er minder ruis staat.
+  if (isset($form['field_documenten'][LANGUAGE_NONE])) {
+    foreach (element_children($form['field_documenten'][LANGUAGE_NONE]) as $delta) {
+      if (is_numeric($delta) && isset($form['field_documenten'][LANGUAGE_NONE][$delta]['#type'])) {
+        $form['field_documenten'][LANGUAGE_NONE][$delta]['#title_display'] = 'invisible';
+      }
+    }
+  }
 }
 
 /**

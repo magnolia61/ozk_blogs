@@ -63,3 +63,18 @@ form.ozk-blog-form .field-name-body textarea {
   min-height: 26em !important;
   resize: vertical;
 }
+
+/* Minder ruis onder het blogtekst-veld: verberg de lange lijst met toegestane
+   HTML-tags/stijl-eigenschappen ("Tekstopmaak"-tips). De formaatkiezer zelf
+   blijft staan, zodat rich-text nog aangezet kan worden. */
+form.ozk-blog-form .filter-guidelines,
+form.ozk-blog-form .filter-help {
+  display: none !important;
+}
+
+/* Documenten-veld compacter: de knop/labels wat kleiner en rustiger. */
+form.ozk-blog-form .field-name-field-documenten .form-managed-file label,
+form.ozk-blog-form .field-name-field-documenten .description {
+  font-size: 0.85em;
+  font-weight: 400;
+}
