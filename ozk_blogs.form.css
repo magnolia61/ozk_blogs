@@ -1,37 +1,52 @@
 /**
  * Compacter blog-formulier (node/add/article + edit).
  *
- * Vermindert de royale verticale witruimte die het Seven-adminthema per
- * form-item aanhoudt, zodat het Body-veld niet ver naar beneden wordt geduwd.
- * Alles is gescoped op .ozk-blog-form (toegevoegd via hook_form_alter), zodat
- * geen enkel ander formulier op de site wordt beïnvloed.
+ * Het formulier rendert in het front-end-thema Porto_sub, dat royale marges en
+ * grote labels/legends aanhoudt waardoor het Body-veld ver naar beneden wordt
+ * geduwd. Deze regels brengen die witruimte terug. Alles is gescoped op
+ * .ozk-blog-form (toegevoegd via hook_form_alter), dus geen enkel ander
+ * formulier op de site wordt beïnvloed.
  */
 
-/* Minder ruimte boven/onder elk veld. */
+/* Per-veld container en de losse form-items compacter. */
+form.ozk-blog-form .form-wrapper {
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}
 form.ozk-blog-form .form-item {
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
+  margin-top: 0.3em !important;
+  margin-bottom: 0.3em !important;
 }
 
-/* Helpteksten dichter onder het label/veld en iets rustiger. */
-form.ozk-blog-form .description {
-  margin-top: 0.1em;
-  line-height: 1.3;
+/* Labels en fieldset-koppen (Banner fotos, Meer fotos, Body) kleiner en
+   dichter op hun veld. In Porto zijn deze standaard fors. */
+form.ozk-blog-form label,
+form.ozk-blog-form .fieldset-legend {
+  font-size: 1rem !important;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 0.15em !important;
 }
 
-/* De twee foto-velden zitten in een omkaderd blok; strakker maken. */
-form.ozk-blog-form fieldset.field-type-image,
-form.ozk-blog-form .field-type-image .form-item {
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
+/* Fieldsets van de fotovelden strak omkaderen i.p.v. veel padding. */
+form.ozk-blog-form fieldset {
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
 }
-form.ozk-blog-form fieldset.field-type-image .fieldset-wrapper {
+form.ozk-blog-form fieldset .fieldset-wrapper {
   padding-top: 0.3em;
   padding-bottom: 0.3em;
 }
 
-/* Iets minder ruimte tussen de losse fieldsets/velden onderling. */
-form.ozk-blog-form .field-widget-media-generic {
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
+/* Helpteksten dichter onder het veld en iets rustiger. */
+form.ozk-blog-form .description {
+  margin-top: 0.1em;
+  font-size: 0.85em;
+  line-height: 1.3;
+}
+
+/* De media-widgets (foto's) intern compacter. */
+form.ozk-blog-form .field-widget-media-generic .form-item {
+  margin-top: 0.2em !important;
+  margin-bottom: 0.2em !important;
 }
