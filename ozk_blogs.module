@@ -157,6 +157,63 @@ function ozk_blogs_tag_afleiden(&$node) {
 }
 
 /**
+ * Haalt het 11-tekens YouTube-video-ID uit een URL (watch?v=, youtu.be/,
+ * embed/, shorts/ of een kale ID). Geeft NULL als er niets bruikbaars in zit.
+ */
+function ozk_blogs_youtube_id($url) {
+  $url = trim($url);
+  if ($url === '') {
+    return NULL;
+  }
+  // Kale ID (precies 11 toegestane tekens).
+  if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $url)) {
+    return $url;
+  }
+  // Diverse YouTube-URL-vormen.
+  if (preg_match('~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|v/)|youtu\.be/)([a-zA-Z0-9_-]{11})~', $url, $m)) {
+    return $m[1];
+  }
+  return NULL;
+}
+
+/**
+ * Implements hook_node_view().
+ *
+ * Rendert de YouTube-vlog (uit field_vlog_url) als responsieve embed boven de
+ * blogtekst, met exact dezelfde opmaak als de welkomvideo's elders op de site
+ * (.embed-container in een omkaderd blok). Alleen op de volledige pagina, niet
+ * in teaser-/lijstweergaven.
+ */
+function ozk_blogs_node_view($node, $view_mode, $langcode) {
+  if ($node->type !== 'article' || $view_mode === 'teaser' || $view_mode === 'rss') {
+    return;
+  }
+
+  $url = $node->field_vlog_url[LANGUAGE_NONE][0]['value'] ?? '';
+  $vid = ozk_blogs_youtube_id($url);
+  if (!$vid) {
+    return;
+  }
+
+  // Zelfde markup als de welkomvideo, zonder autoplay (past niet bij een blog).
+  $embed_url = 'https://www.youtube.com/embed/' . $vid;
+  $html =
+    '<div class="ozk-vlog" style="border: 3px solid #777; margin: 0 0 1em; padding: 10px">'
+    . '<div class="embed-container">'
+    . '<iframe src="' . check_url($embed_url) . '" '
+    . 'allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" '
+    . 'frameborder="0" allowfullscreen></iframe>'
+    . '</div></div>';
+
+  // Negatieve weight zodat de video bovenaan de blogtekst verschijnt (de banner
+  // wordt in het template apart, daarboven, gerenderd).
+  $node->content['ozk_vlog'] = array(
+    '#markup' => $html,
+    '#weight' => -50,
+  );
+}
+
+/**
  * Implements hook_node_insert().
  */
 function ozk_blogs_node_insert($node) {
