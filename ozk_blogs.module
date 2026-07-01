@@ -214,8 +214,17 @@ function ozk_blogs_activiteit_loggen($node) {
  * bewerken (node/%/edit) maar bewust niet bij aanmaken (node/add/article,
  * zie exclude_node_title_preprocess_page()). De titel wordt sowieso
  * automatisch samengesteld door ozk_blogs_titel_samenstellen() hierboven.
+ *
+ * Verbergt ook het tags-veld: de kamptype-tag wordt automatisch afgeleid uit
+ * het kamp (zie ozk_blogs_tag_afleiden()), dus de hoofdleiding hoeft hier
+ * niets meer te kiezen. #access = FALSE laat bestaande, reeds opgeslagen tags
+ * intact bij bewerken.
  */
 function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) {
   $form['title']['#access']   = FALSE;
   $form['title']['#required'] = FALSE;
+
+  if (isset($form['field_tags'])) {
+    $form['field_tags']['#access'] = FALSE;
+  }
 }
