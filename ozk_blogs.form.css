@@ -76,11 +76,15 @@ form.ozk-blog-form .field-name-body textarea {
   resize: vertical;
 }
 
-/* Minder ruis onder het blogtekst-veld: verberg de lange lijst met toegestane
-   HTML-tags/stijl-eigenschappen ("Tekstopmaak"-tips). De formaatkiezer zelf
-   blijft staan, zodat rich-text nog aangezet kan worden. */
+/* Tekstformaat is hardcoded op Filtered HTML: verberg de hele formaat-UI
+   (de "Tekstopmaak"-kiezer, de tips en de "Disable rich-text"-link). De
+   elementen blijven in de DOM (display:none, niet verwijderd) zodat de
+   rich-text-editor blijft werken. */
+form.ozk-blog-form .filter-wrapper,
 form.ozk-blog-form .filter-guidelines,
-form.ozk-blog-form .filter-help {
+form.ozk-blog-form .filter-help,
+form.ozk-blog-form a.wysiwyg-toggle-wrapper,
+form.ozk-blog-form [id^="wysiwyg-toggle"] {
   display: none !important;
 }
 

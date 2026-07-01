@@ -346,18 +346,32 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
 }
 
 /**
- * #after_build voor het body-veld: verbergt de filter-guidelines (lijst met
- * toegestane tags) en de "meer informatie"-help. De formaatkiezer blijft.
+ * #after_build voor het body-veld:
+ * - verbergt de filter-guidelines (lijst met toegestane tags) en de
+ *   "meer informatie"-help;
+ * - forceert het tekstformaat op "Filtered HTML" en zet de formaatkiezer vast,
+ *   zodat de hoofdleiding niet meer hoeft (en kan) kiezen. De select blijft in
+ *   de DOM (verborgen via CSS) zodat de rich-text-editor blijft werken.
  */
 function ozk_blogs_body_after_build($element, &$form_state) {
   foreach (element_children($element) as $lang) {
     foreach (element_children($element[$lang]) as $delta) {
-      if (isset($element[$lang][$delta]['format']['guidelines'])) {
-        $element[$lang][$delta]['format']['guidelines']['#access'] = FALSE;
+      $fmt = &$element[$lang][$delta]['format'];
+      if (!isset($fmt)) {
+        continue;
       }
-      if (isset($element[$lang][$delta]['format']['help'])) {
-        $element[$lang][$delta]['format']['help']['#access'] = FALSE;
+      if (isset($fmt['guidelines'])) {
+        $fmt['guidelines']['#access'] = FALSE;
       }
+      if (isset($fmt['help'])) {
+        $fmt['help']['#access'] = FALSE;
+      }
+      // Vast op Filtered HTML.
+      if (isset($fmt['format'])) {
+        $fmt['format']['#default_value'] = 'filtered_html';
+        $fmt['format']['#value']         = 'filtered_html';
+      }
+      unset($fmt);
     }
   }
   return $element;
