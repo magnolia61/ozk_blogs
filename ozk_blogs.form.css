@@ -88,6 +88,22 @@ form.ozk-blog-form [id^="wysiwyg-toggle"] {
   display: none !important;
 }
 
+/* Fotovelden compacter: de thumbnails/previews van de media-widget flink
+   verkleinen zodat 10 foto's niet zoveel verticale ruimte innemen op het
+   edit-formulier. */
+form.ozk-blog-form .field-widget-media-generic img {
+  max-height: 90px !important;
+  width: auto !important;
+}
+/* Minder marge/padding rond elk foto-item en z'n crop-widget. */
+form.ozk-blog-form .field-widget-media-generic .media-widget,
+form.ozk-blog-form .field-widget-media-generic .media-thumbnail,
+form.ozk-blog-form .field-widget-media-generic .manualcrop-preview,
+form.ozk-blog-form .field-widget-media-generic .form-item {
+  margin-top: 0.15em !important;
+  margin-bottom: 0.15em !important;
+}
+
 /* Documenten-veld compacter: de knop/labels wat kleiner en rustiger. */
 form.ozk-blog-form .field-name-field-documenten .form-managed-file label,
 form.ozk-blog-form .field-name-field-documenten .description {
