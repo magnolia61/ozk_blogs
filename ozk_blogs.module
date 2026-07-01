@@ -355,19 +355,22 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
 }
 
 /**
- * #after_build voor de fotovelden: verandert de "Verwijderen"-submitknoppen in
- * een klein kruisje (×) en geeft ze een class voor positionering via CSS. De
- * werking blijft ongewijzigd (AJAX herkent de knop op #name, niet op label).
+ * #after_build voor de fotovelden: maakt van de "Verwijderen"-knop een kruisje
+ * (× rechtsboven) en van de "Bewerken"-modal-link een potlood-icoon (✎
+ * linksboven). Beide krijgen een class voor positionering via CSS. De werking
+ * blijft ongewijzigd (AJAX/ctools herkennen de knop op #name resp. de
+ * modal-class, niet op het label).
  */
 function ozk_blogs_photo_field_after_build($element, &$form_state) {
-  ozk_blogs_mark_remove_buttons($element);
+  ozk_blogs_mark_photo_buttons($element);
   return $element;
 }
 
 /**
- * Loopt recursief door een element en herlabelt elke 'remove_button'.
+ * Loopt recursief door een element en herlabelt de 'remove_button' (→ ✕) en de
+ * 'edit'-modal-link (→ ✎).
  */
-function ozk_blogs_mark_remove_buttons(&$element) {
+function ozk_blogs_mark_photo_buttons(&$element) {
   foreach (element_children($element) as $key) {
     if ($key === 'remove_button'
       && isset($element[$key]['#type'])
@@ -376,7 +379,12 @@ function ozk_blogs_mark_remove_buttons(&$element) {
       $element[$key]['#attributes']['class'][] = 'ozk-remove-x';
       $element[$key]['#attributes']['title'] = t('Verwijderen');
     }
-    ozk_blogs_mark_remove_buttons($element[$key]);
+    if ($key === 'edit' && isset($element[$key]['#title'])) {
+      $element[$key]['#title'] = '✎';
+      $element[$key]['#attributes']['class'][] = 'ozk-edit-icon';
+      $element[$key]['#attributes']['title'] = t('Bewerken / uploaden');
+    }
+    ozk_blogs_mark_photo_buttons($element[$key]);
   }
 }
 

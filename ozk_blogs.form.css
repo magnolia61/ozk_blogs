@@ -155,6 +155,33 @@ form.ozk-blog-form .field-widget-media-generic .ozk-remove-x {
   z-index: 5;
   box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
+
+/* Bewerk-/upload-icoon (potlood) als rond knopje linksboven op de foto,
+   opent dezelfde ctools-modal. */
+form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon {
+  position: absolute !important;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 28px;
+  text-align: center;
+  border: 0 !important;
+  border-radius: 50%;
+  background: #C13C62;
+  color: #fff !important;
+  font-size: 15px;
+  text-decoration: none;
+  z-index: 5;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon:hover,
+form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon:focus {
+  background: #9c2f4e;
+  color: #fff !important;
+}
 form.ozk-blog-form .field-widget-media-generic tbody td {
   display: block !important;
   border: 0 !important;
