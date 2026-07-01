@@ -25,6 +25,7 @@ function ozk_blogs_node_presave($node) {
 
   ozk_blogs_datum_corrigeren($node);
   ozk_blogs_titel_samenstellen($node);
+  ozk_blogs_tag_afleiden($node);
 }
 
 /**
@@ -73,6 +74,59 @@ function ozk_blogs_titel_samenstellen(&$node) {
   }
 
   $node->title = trim("{$datum_fmt} {$kamp_code}: {$blogtitel}");
+}
+
+/**
+ * Zet automatisch de kamptype-tag op basis van het gekozen kamp.
+ *
+ * Het bovenste niveau van field_kamp_categorie (kinderkamp / brugkamp /
+ * tienerkamp / jeugdkamp / topkamp) heeft in de 'tags'-vocabulaire een
+ * gelijknamige term. Die tag wordt hier toegevoegd zodat de hoofdleiding
+ * 'm niet meer handmatig hoeft aan te vinken.
+ *
+ * Bestaande, handmatig gekozen tags (bv. jubileum, ouders) blijven staan:
+ * de kamptype-tag wordt toegevoegd, niet overschreven. Zo blijft het
+ * tags-veld op het formulier bruikbaar voor eventuele extra tags.
+ *
+ * Voor kamp 'algemeen' (of geen kamp) is er geen kamptype-tag; dan gebeurt
+ * er niets en kan men eventueel zelf een tag aanvinken.
+ */
+function ozk_blogs_tag_afleiden(&$node) {
+  $langcode = LANGUAGE_NONE;
+
+  $kamp_tid = $node->field_kamp_categorie[$langcode][0]['tid'] ?? NULL;
+  if (!$kamp_tid) {
+    return;
+  }
+
+  // Bovenste niveau (root) van de gekozen kampterm bepalen.
+  $parents = taxonomy_get_parents_all($kamp_tid);
+  $root    = end($parents);
+  if (!$root) {
+    return;
+  }
+
+  // Gelijknamige term zoeken in de 'tags'-vocabulaire.
+  $tag_terms = taxonomy_get_term_by_name($root->name, 'tags');
+  if (empty($tag_terms)) {
+    return;
+  }
+  $tag_term = reset($tag_terms);
+
+  // Bestaande tags verzamelen en de kamptype-tag toevoegen als die er nog
+  // niet bij staat (niet overschrijven).
+  $huidige_tids = [];
+  if (!empty($node->field_tags[$langcode])) {
+    foreach ($node->field_tags[$langcode] as $item) {
+      if (!empty($item['tid'])) {
+        $huidige_tids[] = $item['tid'];
+      }
+    }
+  }
+
+  if (!in_array($tag_term->tid, $huidige_tids)) {
+    $node->field_tags[$langcode][] = ['tid' => $tag_term->tid];
+  }
 }
 
 /**
