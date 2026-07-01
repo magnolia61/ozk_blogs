@@ -426,7 +426,7 @@ function ozk_blogs_field_widget_form_alter(&$element, &$form_state, $context) {
   }
   $field_name = $context['field']['field_name'] ?? NULL;
   if ($field_name === 'field_image') {
-    $element['#file_upload_title'] = t("upload banner foto's");
+    $element['#file_upload_title'] = t("upload meer banner foto's");
   }
   elseif ($field_name === 'field_extraimages') {
     $element['#file_upload_title'] = t("upload meer foto's");
