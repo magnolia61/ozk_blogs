@@ -227,4 +227,10 @@ function ozk_blogs_form_article_node_form_alter(&$form, &$form_state, $form_id) 
   if (isset($form['field_tags'])) {
     $form['field_tags']['#access'] = FALSE;
   }
+
+  // Compacter formulier: minder verticale witruimte tussen de velden zodat het
+  // Body-veld niet zo ver naar beneden staat. CSS is gescoped op de klasse
+  // hieronder, dus andere formulieren op de site blijven ongemoeid.
+  $form['#attributes']['class'][] = 'ozk-blog-form';
+  $form['#attached']['css'][] = drupal_get_path('module', 'ozk_blogs') . '/ozk_blogs.form.css';
 }
