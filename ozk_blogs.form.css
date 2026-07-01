@@ -170,7 +170,7 @@ form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon {
   text-align: center;
   border: 0 !important;
   border-radius: 50%;
-  background: #C13C62;
+  background: #2977b6; /* blauw bewerk-icoon */
   color: #fff !important;
   font-size: 15px;
   text-decoration: none;
@@ -179,7 +179,20 @@ form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon {
 }
 form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon:hover,
 form.ozk-blog-form .field-widget-media-generic .ozk-edit-icon:focus {
-  background: #9c2f4e;
+  background: #1f5e90;
+  color: #fff !important;
+}
+
+/* "Bijsnijden"-knop grijs (i.p.v. de OZK-magenta van btn-primary). */
+form.ozk-blog-form .field-widget-media-generic .manualcrop-style-button {
+  background: #8a8a8a !important;
+  border-color: #8a8a8a !important;
+  color: #fff !important;
+}
+form.ozk-blog-form .field-widget-media-generic .manualcrop-style-button:hover,
+form.ozk-blog-form .field-widget-media-generic .manualcrop-style-button:focus {
+  background: #6f6f6f !important;
+  border-color: #6f6f6f !important;
   color: #fff !important;
 }
 form.ozk-blog-form .field-widget-media-generic tbody td {
