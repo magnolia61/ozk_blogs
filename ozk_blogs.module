@@ -16,26 +16,28 @@
  */
 
 /**
- * Implements hook_custom_theme().
+ * Implements hook_admin_paths_alter().
  *
- * Toont het blog aanmaak-/bewerkformulier in het front-end-thema (Porto_sub /
- * het standaardthema) i.p.v. het Seven-adminthema. Zo krijgt de hoofdleiding
- * een herkenbare, minder "technische" omgeving om te bloggen.
+ * Haalt het blog aanmaak-/bewerkformulier uit de "admin"-paden, zodat het in
+ * het standaard front-end-thema (Porto_sub) rendert i.p.v. Seven. Dit is de
+ * juiste plek: node_admin_theme forceert Seven via de admin-pad-detectie en
+ * die theme-callback wint van hook_custom_theme(). Door het pad hier als
+ * niet-admin (FALSE) te markeren valt het terug op het standaardthema.
  *
- * Alleen gescoped op de blog-routes; de globale instelling node_admin_theme
- * (die geldt voor álle content) blijft ongemoeid, zodat overig beheer gewoon
- * in Seven blijft.
+ * De globale instelling node_admin_theme blijft ongemoeid, dus overig beheer
+ * blijft in Seven.
  */
-function ozk_blogs_custom_theme() {
-  // node/add/article
-  if (arg(0) === 'node' && arg(1) === 'add' && arg(2) === 'article') {
-    return variable_get('theme_default', 'porto_sub');
-  }
-  // node/%/edit voor een blog (article)
+function ozk_blogs_admin_paths_alter(&$paths) {
+  // Blog aanmaken -> front-end-thema.
+  $paths['node/add/article'] = FALSE;
+
+  // Blog bewerken -> alleen voor article-nodes front-end-thema. Er is geen
+  // type-specifiek padpatroon voor node/%/edit, dus markeer alleen het
+  // huidige pad als het om een article gaat.
   if (arg(0) === 'node' && is_numeric(arg(1)) && arg(2) === 'edit') {
     $node = node_load(arg(1));
     if ($node && $node->type === 'article') {
-      return variable_get('theme_default', 'porto_sub');
+      $paths[current_path()] = FALSE;
     }
   }
 }
