@@ -134,6 +134,26 @@ form.ozk-blog-form .field-widget-media-generic tbody tr {
   background: #fafafa;
   padding: 8px;
   margin: 0;
+  position: relative; /* anker voor het ×-verwijderknopje */
+}
+
+/* Verwijderknop als klein rond kruisje rechtsboven op de foto. */
+form.ozk-blog-form .field-widget-media-generic .ozk-remove-x {
+  position: absolute !important;
+  top: 4px;
+  right: 4px;
+  width: 28px !important;
+  height: 28px;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+  z-index: 5;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
 form.ozk-blog-form .field-widget-media-generic tbody td {
   display: block !important;
