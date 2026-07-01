@@ -114,20 +114,20 @@ form.ozk-blog-form .field-widget-media-generic .form-item {
 /* ---- Foto's als overzichtelijk grid i.p.v. lange lijst onder elkaar ---- */
 /* De multi-value tabel omzetten naar een responsief grid van kaartjes. */
 form.ozk-blog-form .field-widget-media-generic table {
-  display: block;
+  display: block !important;
   width: 100%;
   border: 0;
 }
 form.ozk-blog-form .field-widget-media-generic thead {
-  display: none; /* kolomkoppen (Bestandsinformatie/Gewicht/Bewerkingen) weg */
+  display: none !important; /* kolomkoppen (Bestandsinformatie/Gewicht/Bewerkingen) weg */
 }
 form.ozk-blog-form .field-widget-media-generic tbody {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 12px;
 }
 form.ozk-blog-form .field-widget-media-generic tbody tr {
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -136,7 +136,7 @@ form.ozk-blog-form .field-widget-media-generic tbody tr {
   margin: 0;
 }
 form.ozk-blog-form .field-widget-media-generic tbody td {
-  display: block;
+  display: block !important;
   border: 0 !important;
   padding: 3px 0;
   width: auto !important;
