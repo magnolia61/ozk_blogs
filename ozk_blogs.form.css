@@ -142,13 +142,20 @@ form.ozk-blog-form .field-widget-media-generic tbody td {
   width: auto !important;
 }
 
-/* Alleen de bijgesneden versie tonen, het originele voorbeeld verbergen. */
+/* Toon de fotothumbnail netjes bovenaan in het kaartje. (Het "alleen de
+   gecropte tonen" is losgelaten: die preview-div wordt pas door JS gevuld en
+   bleef leeg, waardoor de kaartjes geen beeld hadden.) */
 form.ozk-blog-form .field-widget-media-generic .preview {
-  display: none !important;
-}
-form.ozk-blog-form .field-widget-media-generic .manualcrop-preview-cropped {
   display: block !important;
+  text-align: center;
   margin: 0 0 6px;
+}
+form.ozk-blog-form .field-widget-media-generic .media-thumbnail {
+  display: inline-block;
+}
+form.ozk-blog-form .field-widget-media-generic .preview img {
+  max-height: 120px !important;
+  width: auto !important;
 }
 
 /* Crop-knop en actieknoppen vullen de kaartbreedte, netjes onder elkaar. */
